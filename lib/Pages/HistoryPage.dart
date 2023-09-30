@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../All Functions Page/Functions.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -16,7 +15,20 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text("Cancer History"), elevation: 10, backgroundColor: Colors.amber),
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            centerTitle: true,
+            foregroundColor: Colors.black,
+            title: RichText(
+                softWrap: true,
+                text: const TextSpan(children: <TextSpan>[
+                  TextSpan(
+                      text: 'History',
+                      style: TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: 'Page',
+                      style: TextStyle(fontSize: 24, color: Color(0xFF016DF7), fontWeight: FontWeight.bold))
+                ]))),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(children: [

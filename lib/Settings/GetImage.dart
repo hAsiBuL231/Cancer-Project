@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cancer_project/All%20Functions%20Page/FirebaseFunction.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,7 +9,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../All Functions Page/Functions.dart';
-import '../Settings/EditPatientProfile.dart';
 
 class GetImage extends StatefulWidget {
   const GetImage({super.key});
@@ -90,7 +90,7 @@ class _GetImageState extends State<GetImage> {
                               child: CircleAvatar(radius: 130, backgroundImage: NetworkImage(imageURL))),
                           const SizedBox(height: 30),
                           FilledButton(
-                              onPressed: () => nextPage(const EditPatientProfile(), context),
+                              onPressed: () => authentication(context),
                               child: const Text('OK', style: TextStyle(fontSize: 20))),
                           const SizedBox(height: 30),
                           TextButton(onPressed: () => showImagePicker(context), child: const Text('Select Again!'))

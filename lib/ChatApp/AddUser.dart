@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../All Functions Page/Functions.dart';
-import 'UserChatDetailPage.dart';
+import 'ConversationPage.dart';
 
 class AddUser extends StatefulWidget {
   const AddUser({super.key});
@@ -40,11 +40,12 @@ class _AddUserState extends State<AddUser> {
                           padding: const EdgeInsets.only(top: 5),
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
-                            if (snapshot.connectionState == ConnectionState.waiting)
-                              return Center(child: CircularProgressIndicator());
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
                             String email = snapshot.data.docs[index].id;
-                            String name = snapshot.data.docs[index]['name'];
-                            if ('$email' == '$userEmail') return SizedBox.shrink();
+                            String name = snapshot.data.docs[index]['User Name'];
+                            if (email == '$userEmail') return const SizedBox.shrink();
                             return FilledButton(
                                 /*onPressed: () async {
                           var user1inbox = FirebaseFirestore.instance
@@ -77,10 +78,8 @@ class _AddUserState extends State<AddUser> {
                           Navigator.pop(context);
                         },*/
                                 onPressed: () => nextPage(
-                                    UserChatDetailPage(
-                                      email: email,
-                                      imageUrl: snapshot.data.docs[index]['imageUrl'],
-                                    ),
+                                    ConversationPage(
+                                        email: email, imageUrl: snapshot.data.docs[index]['imageUrl']),
                                     context),
                                 child: Row(children: [
                                   CachedNetworkImage(
@@ -89,11 +88,13 @@ class _AddUserState extends State<AddUser> {
                                           backgroundImage: imageProvider,
                                           maxRadius: 15,
                                           backgroundColor: Colors.blue),
-                                      placeholder: (context, url) => CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) => CircleAvatar(
-                                          child: Icon(Icons.account_circle,size: 32), maxRadius: 15, backgroundColor: Colors.blue)),
-                                  SizedBox(width: 10),
-                                  Text("$name"),
+                                      placeholder: (context, url) => const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) => const CircleAvatar(
+                                          maxRadius: 15,
+                                          backgroundColor: Colors.blue,
+                                          child: Icon(Icons.account_circle, size: 32))),
+                                  const SizedBox(width: 10),
+                                  Text(name),
                                 ]));
                           }));
                 }

@@ -1,52 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cancer_project/Auth/AuthTree.dart';
 import 'package:cancer_project/Auth/ChangePassword.dart';
 import 'package:cancer_project/Settings/EditPatientProfile.dart';
 import 'package:cancer_project/All%20Functions%20Page/Functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-/*
-class UserProfile extends StatefulWidget {
-  const UserProfile({super.key});
-
-  @override
-  State<UserProfile> createState() => _UserProfileState();
-}
-
-class _UserProfileState extends State<UserProfile> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue,
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            height: 140,
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(
-                  'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fG1vdW50YWluc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
-                ),
-              ),
-            ),
-          ),
-
-
-
-        ],
-      ),
-    );
-  }
-}
-*/
+import '../ChatApp/UsersProfile.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
@@ -56,56 +18,11 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateMixin {
-  /*
-  //late Profile6Model _model;
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final animationsMap = {
-    'buttonOnPageLoadAnimation': Animate(
-      //trigger: AnimationTrigger.onPageLoad,
-      effects: [
-        VisibilityEffect(duration: 400.ms),
-        FadeEffect(
-          curve: Curves.easeInOut,
-          delay: 400.ms,
-          duration: 600.ms,
-          begin: 0,
-          end: 1,
-        ),
-        MoveEffect(
-          curve: Curves.easeInOut,
-          delay: 400.ms,
-          duration: 600.ms,
-          begin: const Offset(0, 60),
-          end: const Offset(0, 0),
-        ),
-      ],
-    ),
-  };
-
-  @override
-  void initState() {
-    super.initState();
-    _model = createModel(context, () => Profile6Model());
-
-    setupAnimations(
-      animationsMap.values.where((anim) =>
-      anim.trigger == AnimationTrigger.onActionTrigger ||
-          !anim.applyInitialState),
-      this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-*/
-
-  Color primary = Colors.lightBlueAccent;
+  String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  String? userName = FirebaseAuth.instance.currentUser?.displayName;
+  String? userImage = FirebaseAuth.instance.currentUser?.photoURL;
+  //Color primary = Colors.lightBlueAccent;
+  Color primary = Colors.black;
   Color secondary = Colors.blueAccent;
   Color black = Colors.black;
   Color white = Colors.white;
@@ -126,6 +43,7 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                 height: 200,
                 child: Stack(
                   children: [
+                    /// Background Image
                     Container(
                       width: double.infinity,
                       height: 140,
@@ -135,35 +53,43 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                             fit: BoxFit.cover, image: AssetImage("Assets/background_hill.webp")),
                       ),
                     ),
+
+                    /// Profile Pic
                     Align(
-                      alignment: const AlignmentDirectional(-1, 1),
+                      alignment: const AlignmentDirectional(-1.1, 1.5),
                       child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 0, 16),
+                        padding: const EdgeInsetsDirectional.fromSTEB(30, 0, 0, 16),
                         child: Container(
-                          width: 90,
-                          height: 90,
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
                             color: primary,
                             //color: FlutterFlowTheme.of(context).accent2,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: secondary,
-                              //color: FlutterFlowTheme.of(context).secondary,
-                              width: 2,
-                            ),
+                                //color: secondary,
+                                //width: 2,
+                                ),
                           ),
                           child: Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 4, 4),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
+                              borderRadius: BorderRadius.circular(60),
                               child: CachedNetworkImage(
                                 fadeInDuration: const Duration(milliseconds: 500),
                                 fadeOutDuration: const Duration(milliseconds: 500),
-                                imageUrl:
-                                    'https://images.unsplash.com/photo-1489980557514-251d61e3eeb6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OTZ8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=900&q=60',
+                                imageUrl: '$userImage',
+                                //'https://images.unsplash.com/photo-1489980557514-251d61e3eeb6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OTZ8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=900&q=60',
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,
+                                imageBuilder: (context, imageProvider) => CircleAvatar(
+                                    backgroundImage: imageProvider, maxRadius: 25, backgroundColor: Colors.blue),
+                                placeholder: (context, url) => const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => const CircleAvatar(
+                                    maxRadius: 25,
+                                    backgroundColor: Colors.blue,
+                                    child: Icon(Icons.account_circle, size: 50)),
                               ),
                             ),
                           ),
@@ -173,21 +99,29 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                   ],
                 ),
               ),
+              const SizedBox(height: 6),
+
+              /// User Name
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-                child: Text('Andrew D.',
+                child: Text('$userName',
                     style: TextStyle(
                         fontSize: 28, fontWeight: FontWeight.bold, fontFamily: GoogleFonts.outfit().fontFamily)),
               ),
+
+              /// User Email
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 4, 0, 16),
                 child: Text(
-                  'andrew@domainname.com',
+                  '$userEmail',
                   style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold, fontFamily: GoogleFonts.outfit().fontFamily),
                   //style: FlutterFlowTheme.of(context).labelMedium,
                 ),
               ),
+              const SizedBox(height: 20),
+
+              /// Additional
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 4, 0, 0),
                 child: Text(
@@ -197,8 +131,10 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                   //style: FlutterFlowTheme.of(context).labelMedium,
                 ),
               ),
+
+              /// Profile Details
               GestureDetector(
-                onTap: () => nextPage(const EditPatientProfile(), context),
+                onTap: () => nextPage(UsersProfile(userEmail!), context),
                 child: Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
                   child: Container(
@@ -231,6 +167,64 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                           Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
                             child: Text(
+                              'Profile Details',
+                              style: TextStyle(fontSize: 18, fontFamily: GoogleFonts.outfit().fontFamily),
+                              //style: FlutterFlowTheme.of(context).labelLarge,
+                            ),
+                          ),
+                          const Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional(0.9, 0),
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.black,
+                                //color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              /// Edit Profile
+              GestureDetector(
+                onTap: () => nextPage(const EditPatientProfile(), context),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      //color: FlutterFlowTheme.of(context).secondaryBackground,
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 3,
+                          color: Color(0x33000000),
+                          offset: Offset(0, 1),
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(8),
+                      shape: BoxShape.rectangle,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const Icon(
+                            Icons.mode_edit_outline_outlined,
+                            color: Colors.black,
+                            //color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 24,
+                          ),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+                            child: Text(
                               'Edit Profile',
                               style: TextStyle(fontSize: 18, fontFamily: GoogleFonts.outfit().fontFamily),
                               //style: FlutterFlowTheme.of(context).labelLarge,
@@ -253,6 +247,8 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                   ),
                 ),
               ),
+
+              /// Change Password
               GestureDetector(
                 onTap: () => nextPage(const ChangePasswordWidget(), context),
                 child: Padding(
@@ -309,6 +305,110 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                   ),
                 ),
               ),
+
+              /// Delete Account
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Are You Sure?"),
+                        content: const Text("This will delete all of your data and this account."),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              FirebaseFirestore.instance.collection("user_list").doc("$userEmail").delete();
+                              FirebaseAuth.instance.currentUser!.delete();
+                              //FirebaseAuth.instance.signOut();
+                              //Navigator.of(context).pop();
+                              newPage(const AuthTreeWidget(), context);
+                              snackBar("Your account is deleted!", context);
+                            },
+                            child: const Text("Delete", style: TextStyle(color: Colors.black)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      //color: FlutterFlowTheme.of(context).secondaryBackground,
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 3,
+                          color: Color(0x33000000),
+                          offset: Offset(0, 1),
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(8),
+                      shape: BoxShape.rectangle,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const Icon(
+                            Icons.delete_forever_outlined,
+                            color: Colors.black,
+                            //color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 24,
+                          ),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+                            child: Text(
+                              'Delete Account',
+                              style: TextStyle(fontSize: 18, fontFamily: GoogleFonts.outfit().fontFamily),
+                              //style: FlutterFlowTheme.of(context).labelLarge,
+                            ),
+                          ),
+                          const Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional(0.9, 0),
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.black,
+                                //color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              /// Additional App Settings
+
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(24, 16, 0, 0),
+                child: Text(
+                  'App Settings',
+                  style: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold, fontFamily: GoogleFonts.outfit().fontFamily),
+                  //style: FlutterFlowTheme.of(context).labelMedium,
+                ),
+              ),
+
+              /// Notification Settings
+
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
                 child: Container(
@@ -363,15 +463,8 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(24, 16, 0, 0),
-                child: Text(
-                  'App Settings',
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold, fontFamily: GoogleFonts.outfit().fontFamily),
-                  //style: FlutterFlowTheme.of(context).labelMedium,
-                ),
-              ),
+
+              /// Support
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
                 child: Container(
@@ -425,6 +518,8 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                   ),
                 ),
               ),
+
+              /// Terms of Service
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
                 child: Container(
@@ -449,7 +544,7 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Icon(
-                          Icons.privacy_tip_rounded,
+                          Icons.privacy_tip_outlined,
                           color: black,
                           //color: FlutterFlowTheme.of(context).secondaryText,
                           size: 24,
@@ -480,14 +575,21 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
                 ),
               ),
               const SizedBox(height: 20),
+
+              /// Logout Button
               Center(
                 child: FloatingActionButton.extended(
-                    onPressed: () {},
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                      newPage(const AuthTreeWidget(), context);
+                    },
                     label: const Text("  Log Out  "),
                     elevation: 5,
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black),
-              )
+              ),
+              const SizedBox(height: 30),
+
               /*Align(
                 alignment: const AlignmentDirectional(0, 0),
                 child: Padding(
@@ -525,3 +627,43 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
     );
   }
 }
+
+/*
+class UserProfile extends StatefulWidget {
+  const UserProfile({super.key});
+
+  @override
+  State<UserProfile> createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue,
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 140,
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(
+                  'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fG1vdW50YWluc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
+                ),
+              ),
+            ),
+          ),
+
+
+
+        ],
+      ),
+    );
+  }
+}
+*/

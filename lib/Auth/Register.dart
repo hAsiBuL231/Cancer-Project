@@ -7,7 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../All Functions Page/FirebaseFunction.dart';
 
 class RegisterWidget extends StatefulWidget {
-  const RegisterWidget({Key? key}) : super(key: key);
+  final bool doctor;
+  const RegisterWidget({Key? key, required this.doctor}) : super(key: key);
 
   @override
   _RegisterWidgetState createState() => _RegisterWidgetState();
@@ -25,30 +26,29 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF42BEA5),
-      body: SafeArea(
-        child: SingleChildScrollView(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: const Color(0xFF42BEA5),
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
+              /// Image - Hope
               Container(
-                  width: MediaQuery.sizeOf(context).width,
-                  height: 200,
-                  decoration: BoxDecoration(
+                width: MediaQuery.sizeOf(context).width,
+                height: 200,
+                decoration: BoxDecoration(
                     color: const Color(0xFF42BEA5),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Image.asset(
-                        'Assets/black1.png',
-                      ).image,
-                    ),
-                  ),
-                  child: const Image(image: AssetImage('Assets/Hope.png'), fit: BoxFit.contain)),
-              Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 36),
+                    image: DecorationImage(fit: BoxFit.cover, image: Image.asset('Assets/black1.png').image)),
+                child: const Image(image: AssetImage('Assets/Hope.png')),
+              ),
+
+              /// Form
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 36),
+                child: Form(
+                  key: _formKey,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -60,7 +60,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           decoration: InputDecoration(
                             labelText: 'Full Name',
                             hintText: 'Enter your name here...',
-                            floatingLabelStyle: TextStyle(color: Colors.black),
+                            floatingLabelStyle: const TextStyle(color: Colors.black),
                             enabledBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color(0xFF359F8A),
@@ -92,11 +92,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             filled: true,
                             fillColor: const Color(0xFF359F8A),
                           ),
-
                           style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.outfit().fontFamily),
                           keyboardType: TextInputType.text,
                           validator: (value) {
-                            if (value != null) {
+                            if (value == '') {
                               return "Insert your name";
                             } else {
                               return null;
@@ -112,8 +111,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           decoration: InputDecoration(
                             labelText: 'Email Address',
                             hintText: 'Enter your email here...',
-                            floatingLabelStyle: TextStyle(color: Colors.black),
-
+                            floatingLabelStyle: const TextStyle(color: Colors.black),
                             enabledBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color(0xFF359F8A),
@@ -163,8 +161,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           decoration: InputDecoration(
                             labelText: 'Password',
                             hintText: 'Enter your password here...',
-                            floatingLabelStyle: TextStyle(color: Colors.black),
-
+                            floatingLabelStyle: const TextStyle(color: Colors.black),
                             enabledBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color(0xFF359F8A),
@@ -224,8 +221,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           decoration: InputDecoration(
                             labelText: 'Confirm Password',
                             hintText: 'Confirm password here...',
-                            floatingLabelStyle: TextStyle(color: Colors.black),
-
+                            floatingLabelStyle: const TextStyle(color: Colors.black),
                             enabledBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color(0xFF359F8A),
@@ -281,6 +277,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                   ),
                 ),
               ),
+
+              /// Register Button
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                 child: FloatingActionButton.extended(
@@ -290,13 +288,13 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     String _name = fullNameController.text.trim();
                     if (_formKey.currentState!.validate()) {
                       try {
-                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                            email: _email, password: _password);
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(email: _email, password: _password);
                       } catch (e) {
                         snackBar(e.toString(), context);
                         return;
                       }
-                      createUserDatabase(_email, _name);
+                      createUserDatabase(_email, _name, widget.doctor);
                       authentication(context);
                     }
                   },
@@ -312,6 +310,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                   extendedPadding: const EdgeInsetsDirectional.symmetric(vertical: 10, horizontal: 60),
                 ),
               ),
+
+              /// Login Switch
               Padding(
                 padding: const EdgeInsetsDirectional.all(10),
                 child: Column(
@@ -324,7 +324,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       children: [
                         const Text('Already have an account? ', style: TextStyle(color: Colors.black)),
                         TextButton(
-                            onPressed: () => nextPage(const LoginWidget(), context),
+                            onPressed: () => nextPage(LoginWidget(doctor: widget.doctor), context),
                             child: Text('Login',
                                 style: TextStyle(
                                     fontFamily: GoogleFonts.outfit().fontFamily,

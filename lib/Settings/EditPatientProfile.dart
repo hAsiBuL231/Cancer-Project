@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:cancer_project/All%20Functions%20Page/Functions.dart';
 import 'package:cancer_project/BottomNavigator.dart';
+import 'package:cancer_project/Settings/GetImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class EditPatientProfile extends StatefulWidget {
   const EditPatientProfile({
@@ -33,7 +30,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
   TextEditingController HospitalAddressController = TextEditingController();
   TextEditingController DoctorNameController = TextEditingController();
   TextEditingController DoctorLicenceController = TextEditingController();
-  String themeIndex = "Male";
+  String userSex = "Male";
 
   Future<void> _submitForm() async {
     try {
@@ -42,7 +39,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
         //'imageUrl': imageURL,
         'User Name': NameController.text,
         'Age': AgeController.text,
-        'Sex': themeIndex,
+        'Gender': userSex,
         'Address': AddressController.text,
         'Cancer Name': CancerNameController.text,
         'Cancer Stage': CancerStageController.text,
@@ -116,11 +113,12 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
         height: MediaQuery.sizeOf(context).height * 1,
         decoration: const BoxDecoration(),
         child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 10),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                /// Profile Pic
                 Container(
                   width: 90,
                   height: 90,
@@ -135,17 +133,22 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                     child: Image.network(imageURL!),
                   ),
                 ),
+
+                /// Change Photo Button
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
                   child: FloatingActionButton.extended(
-                    onPressed: () {},
+                    onPressed: () => const GetImage(),
                     label: const Text("Change Photo"),
                   ),
                 ),
+
+                /// Form
                 Form(
                     key: _formKey,
                     child: Column(
                       children: [
+                        /// Name
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -186,7 +189,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                               contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                             ),
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Name";
                               } else {
                                 return null;
@@ -194,6 +197,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+                        /// Age
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -235,7 +239,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ),
                             keyboardType: TextInputType.number,
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Age";
                               } else {
                                 return null;
@@ -243,6 +247,8 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
+                        /// Radio Button
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: Card(
@@ -262,10 +268,10 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                                       width: 150,
                                       child: RadioListTile(
                                         title: const Text('Male'),
-                                        value: 0,
-                                        groupValue: themeIndex,
+                                        value: "Male",
+                                        groupValue: userSex,
                                         onChanged: (value) => setState(() {
-                                          themeIndex = "Male";
+                                          userSex = "Male";
                                         }),
                                       ),
                                     ),
@@ -273,10 +279,10 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                                       width: 150,
                                       child: RadioListTile(
                                           title: const Text('Female'),
-                                          value: 1,
-                                          groupValue: themeIndex,
+                                          value: "Female",
+                                          groupValue: userSex,
                                           onChanged: (value) => setState(() {
-                                                themeIndex = "Female";
+                                                userSex = "Female";
                                               })),
                                     ),
                                   ],
@@ -285,6 +291,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ),
                           ),
                         ),
+                        /// Address
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -326,7 +333,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ),
                             maxLines: 3,
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Address";
                               } else {
                                 return null;
@@ -334,6 +341,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+                        /// Cancer Type
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -374,7 +382,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                               contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                             ),
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Cancer Type";
                               } else {
                                 return null;
@@ -384,6 +392,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ///validator: yourNameControllerValidator.asValidator(context),
                           ),
                         ),
+                        /// Cancer Stage
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -424,7 +433,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                               contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                             ),
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Stage";
                               } else {
                                 return null;
@@ -432,6 +441,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+                        /// Admitted Hospital
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -472,7 +482,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                               contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                             ),
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Hospital Name";
                               } else {
                                 return null;
@@ -480,6 +490,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+                        /// Hospital address
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -521,7 +532,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ),
                             maxLines: 3,
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Hospital Address";
                               } else {
                                 return null;
@@ -529,6 +540,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+                        /// Doctors Name
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
@@ -569,7 +581,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                               contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                             ),
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a Doctor's Name";
                               } else {
                                 return null;
@@ -577,9 +589,11 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+                        /// Licence
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: DoctorLicenceController,
                             obscureText: false,
                             decoration: InputDecoration(
@@ -617,7 +631,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                               contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                             ),
                             validator: (value) {
-                              if (value != null) {
+                              if (value == '') {
                                 return "Insert a valid number";
                               } else {
                                 return null;
@@ -627,18 +641,21 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                         ),
                       ],
                     )),
+
+                /// Save Button
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
                   child: FloatingActionButton.extended(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      //if (_formKey.currentState!.validate()) {
                         _submitForm();
-                      }
+                      //}
                     },
                     elevation: 3,
                     label: const Text("Save Changes"),
                   ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
           ),

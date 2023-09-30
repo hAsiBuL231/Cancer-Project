@@ -1,11 +1,13 @@
 import 'package:cancer_project/Auth/AuthTree.dart';
 import 'package:cancer_project/BottomNavigator.dart';
+import 'package:cancer_project/Settings/EditDoctorProfile.dart';
 import 'package:cancer_project/Settings/EditPatientProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../Pages/GetImage.dart';
+import '../Settings/GetImage.dart';
 import 'Functions.dart';
 
 //String? userEmail = FirebaseAuth.instance.currentUser?.email;
@@ -13,29 +15,43 @@ import 'Functions.dart';
 //String? userImage = FirebaseAuth.instance.currentUser?.photoURL;
 
 authentication(context) async {
+  FirebaseAuth.instance.authStateChanges();
+  FirebaseAuth.instance.idTokenChanges();
   User? user = FirebaseAuth.instance.currentUser;
   if (user == null) {
-    print('\n User is currently signed out! \n\n');
+    if (kDebugMode) {
+      print('\n User is currently signed out! \n\n');
+    }
     newPage(const AuthTreeWidget(), context);
   } else {
     String? userEmail = FirebaseAuth.instance.currentUser?.email;
-    String name = "NoData";
+    String age = "NoData";
     String imageURL = '';
+    String doctor = '';
 
     var querySnapshot = await FirebaseFirestore.instance.collection('user_list').doc(userEmail).get();
     var data = querySnapshot.data();
     if (data != null) {
-      if (data['User Name'] != null) name = data['User Name'];
+      if (data['Age'] != null) age = data['Age'];
       if (data['imageUrl'] != null) imageURL = data['imageUrl'];
+      if (data['User'] != null) doctor = data['User'];
     }
 
-    print('\n User is Signed in as: $userEmail! \n');
-    print('\n Phone Number data is: $name \n\n');
+    if (kDebugMode) {
+      print('\n User is Signed in as: $userEmail! \n');
+      print('\n Phone Number data is: $age \n\n');
+    }
+
     snackBar('Signed in as: $userEmail!', context);
-    if (name == "NoData") {
-      newPage(const EditPatientProfile(), context);
-    } else if (imageURL == '') {
+
+    if (imageURL == '') {
       newPage(const GetImage(), context);
+    } else if (age == "NoData") {
+      if (doctor == "Doctor") {
+        newPage(const EditDoctorProfile(), context);
+      } else {
+        newPage(const EditPatientProfile(), context);
+      }
     } else {
       newPage(const BottomNavigatorWidget(), context);
     }
@@ -44,15 +60,27 @@ authentication(context) async {
   return;
 }
 
-createUserDatabase(_userEmail, _userName) {
-  FirebaseFirestore.instance.collection('user_list').doc(_userEmail).set({
+createUserDatabase(_userEmail, _userName, bool _doctor) async {
+  await FirebaseAuth.instance.currentUser!.updateDisplayName("$_userName");
+  await FirebaseFirestore.instance.collection('user_list').doc(_userEmail).set({
     'User Name': _userName,
+    'User': _doctor ? "Doctor" : "Patient",
   }).onError((error, stackTrace) {
     SnackBar(content: Text('Error: $error'));
   });
 }
-
-String getUsername(String email) {
+/*
+_getImage() {
+  String image = '';
+  FirebaseFirestore.instance.collection('user_list').doc(widget.email).snapshots().map((event) {
+    setState(() {
+      image = event.data()!['imageUrl'];
+    });
+  });
+  return image;
+}
+*/
+/*String getUsername(String email) {
   FirebaseFirestore.instance.collection('users').doc(email).snapshots().map((event) {
     var data = event.data();
     email = data!['name'];
@@ -65,7 +93,7 @@ String getUsername(String email) {
     return email;
   });
   return 'No User';
-}
+}*/
 /*
 addScore(int score) async {
   var userEmail = FirebaseAuth.instance.currentUser?.email;

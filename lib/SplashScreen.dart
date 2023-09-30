@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cancer_project/All%20Functions%20Page/FirebaseFunction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashScreenWidget extends StatefulWidget {

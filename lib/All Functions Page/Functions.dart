@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 
 /*
@@ -51,7 +49,7 @@ void newPage(page, context) {
 
 snackBar(String message, context) {
   var snackDemo = SnackBar(
-    duration: Duration(seconds: 2),
+    duration: const Duration(seconds: 2),
     content: Text(message),
     backgroundColor: Colors.blue,
     elevation: 15,

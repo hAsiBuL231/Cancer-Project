@@ -1,6 +1,5 @@
 import 'package:cancer_project/Auth/ChangePassword.dart';
 import 'package:cancer_project/Auth/Register.dart';
-import 'package:cancer_project/BottomNavigator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +8,8 @@ import '../All Functions Page/FirebaseFunction.dart';
 import '../All Functions Page/Functions.dart';
 
 class LoginWidget extends StatefulWidget {
-  const LoginWidget({Key? key}) : super(key: key);
+  final bool doctor;
+  const LoginWidget({Key? key, required this.doctor}) : super(key: key);
 
   @override
   _LoginWidgetState createState() => _LoginWidgetState();
@@ -33,19 +33,14 @@ class _LoginWidgetState extends State<LoginWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                /// Image - Hope
                 Container(
                   width: MediaQuery.sizeOf(context).width,
                   height: 200,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF42BEA5),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Image.asset(
-                        'Assets/black1.png',
-                      ).image,
-                    ),
-                  ),
-                  child: const Image(image: AssetImage('Assets/Hope.png'), fit: BoxFit.contain),
+                      color: const Color(0xFF42BEA5),
+                      image: DecorationImage(fit: BoxFit.cover, image: Image.asset('Assets/black1.png').image)),
+                  child: const Image(image: AssetImage('Assets/Hope.png')),
                 ),
                 Form(
                   key: _formKey,
@@ -62,9 +57,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                             decoration: InputDecoration(
                               labelText: 'Email Address',
                               hintText: 'Your email...',
-                              floatingLabelStyle: TextStyle(color: Colors.black),
-                              hintStyle: TextStyle(
-                                  fontFamily: GoogleFonts.outfit().fontFamily, color: Colors.black54),
+                              floatingLabelStyle: const TextStyle(color: Colors.black),
+                              hintStyle:
+                                  TextStyle(fontFamily: GoogleFonts.outfit().fontFamily, color: Colors.black54),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
                                   color: Color(0xFF359F8A),
@@ -119,9 +114,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                             decoration: InputDecoration(
                               labelText: 'Password',
                               hintText: 'Enter your password here...',
-                              floatingLabelStyle: TextStyle(color: Colors.black),
-                              hintStyle: TextStyle(
-                                  fontFamily: GoogleFonts.outfit().fontFamily, color: Colors.black54),
+                              floatingLabelStyle: const TextStyle(color: Colors.black),
+                              hintStyle:
+                                  TextStyle(fontFamily: GoogleFonts.outfit().fontFamily, color: Colors.black54),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
                                   color: Color(0xFF359F8A),
@@ -237,7 +232,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                       Text('Don’t have an account yet? ',
                           style: TextStyle(fontFamily: GoogleFonts.outfit().fontFamily, color: Colors.black)),
                       TextButton(
-                          onPressed: () => nextPage(const RegisterWidget(), context),
+                          onPressed: () => nextPage(RegisterWidget(doctor: widget.doctor), context),
                           child: Text('Register',
                               style: TextStyle(
                                   fontFamily: GoogleFonts.outfit().fontFamily,

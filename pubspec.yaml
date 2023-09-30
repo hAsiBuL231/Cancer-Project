@@ -35,13 +35,15 @@ dependencies:
   firebase_auth: ^4.6.2
   firebase_storage: ^11.2.4
   cloud_firestore: ^4.8.1
-  firebase_app_check: ^0.1.5+1
+  firebase_app_check: ^0.2.0
 
   image_picker: ^1.0.1
+  file_picker: ^5.3.3
   image_cropper: ^5.0.0
+  flutter_datetime_picker_plus: ^2.1.0
 
 
-  google_fonts: ^5.1.0
+  google_fonts: ^6.1.0
   flutter_animate: ^4.2.0+1
   cached_network_image: ^3.2.3
 
