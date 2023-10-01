@@ -10,6 +10,7 @@ import 'package:cancer_project/Settings/Drawer.dart';
 import 'package:cancer_project/Pages/Profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'ChatApp/ChatPage.dart';
@@ -146,9 +147,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     )),
                 actions: [
                   PopupMenuButton(
-                    itemBuilder: (context) {
-                      return List.empty();
-                    },
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                          onTap: () => SystemNavigator.pop(),
+                          child: const Row(children: [
+                            Icon(Icons.exit_to_app, color: Colors.black),
+                            SizedBox(width: 6),
+                            Text('Exit')
+                          ])),
+                    ],
                   )
                 ],
                 //bottom: PreferredSize(preferredSize: Size.fromRadius(60), child: Text('data')),

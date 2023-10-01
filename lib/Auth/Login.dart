@@ -21,6 +21,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController emailTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
   bool passwordVisibility = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -193,35 +194,39 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 fontFamily: 'OpenSans')))
                   ]),
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
-                  child: FloatingActionButton.extended(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          await FirebaseAuth.instance.signInWithEmailAndPassword(
-                              email: emailTextController.text.trim(),
-                              password: passwordTextController.text.trim());
-                        } catch (e) {
-                          snackBar(e.toString(), context);
-                          return;
+                if (isLoading) const Center(child: CircularProgressIndicator()),
+                if (!isLoading)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
+                    child: FloatingActionButton.extended(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() => isLoading = true);
+                          try {
+                            await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                email: emailTextController.text.trim(),
+                                password: passwordTextController.text.trim());
+                          } catch (e) {
+                            snackBar(e.toString(), context);
+                            setState(() => isLoading = false);
+                          }
+                          authentication(context);
+                          setState(() => isLoading = false);
                         }
-                        authentication(context);
-                      }
-                    },
-                    label: Text("Login",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: GoogleFonts.outfit().fontFamily,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white)),
-                    isExtended: true,
-                    shape: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 3,
-                    backgroundColor: Colors.black,
-                    extendedPadding: const EdgeInsetsDirectional.symmetric(vertical: 10, horizontal: 60),
+                      },
+                      label: Text("Login",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: GoogleFonts.outfit().fontFamily,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
+                      isExtended: true,
+                      shape: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 3,
+                      backgroundColor: Colors.black,
+                      extendedPadding: const EdgeInsetsDirectional.symmetric(vertical: 10, horizontal: 60),
+                    ),
                   ),
-                ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0, 44, 0, 30),
                   child: Row(

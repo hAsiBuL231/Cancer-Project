@@ -23,6 +23,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   TextEditingController confirmPasswordTextController = TextEditingController();
   bool passwordVisibility1 = false;
   bool passwordVisibility2 = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -279,37 +280,41 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               ),
 
               /// Register Button
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                child: FloatingActionButton.extended(
-                  onPressed: () async {
-                    String _email = emailTextController.text.trim();
-                    String _password = passwordTextController.text.trim();
-                    String _name = fullNameController.text.trim();
-                    if (_formKey.currentState!.validate()) {
-                      try {
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(email: _email, password: _password);
-                      } catch (e) {
-                        snackBar(e.toString(), context);
-                        return;
+              if (isLoading) const Center(child: CircularProgressIndicator()),
+              if (!isLoading)
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                  child: FloatingActionButton.extended(
+                    onPressed: () async {
+                      String _email = emailTextController.text.trim();
+                      String _password = passwordTextController.text.trim();
+                      String _name = fullNameController.text.trim();
+                      if (_formKey.currentState!.validate()) {
+                        setState(() => isLoading = true);
+                        try {
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(email: _email, password: _password);
+                        } catch (e) {
+                          snackBar(e.toString(), context);
+                          setState(() => isLoading = false);
+                        }
+                        createUserDatabase(_email, _name, widget.doctor);
+                        authentication(context);
+                        setState(() => isLoading = false);
                       }
-                      createUserDatabase(_email, _name, widget.doctor);
-                      authentication(context);
-                    }
-                  },
-                  label: Text("Create Account",
-                      style: TextStyle(
-                          fontFamily: GoogleFonts.outfit().fontFamily,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
-                  isExtended: true,
-                  shape: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 3,
-                  backgroundColor: Colors.black,
-                  extendedPadding: const EdgeInsetsDirectional.symmetric(vertical: 10, horizontal: 60),
+                    },
+                    label: Text("Create Account",
+                        style: TextStyle(
+                            fontFamily: GoogleFonts.outfit().fontFamily,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                    isExtended: true,
+                    shape: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 3,
+                    backgroundColor: Colors.black,
+                    extendedPadding: const EdgeInsetsDirectional.symmetric(vertical: 10, horizontal: 60),
+                  ),
                 ),
-              ),
 
               /// Login Switch
               Padding(

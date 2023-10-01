@@ -9,13 +9,13 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp();
-    await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.debug);
+    //await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.debug);
     //print('\n  Step: 0 \n ');
-    await FirebaseAppCheck.instance.getToken(true);
-    //print('\n  Step: 1 \n ');
-    await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);
-    //print('\n  Step: 2 \n ');
     await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.playIntegrity);
+    //print('\n  Step: 1 \n ');
+    //await FirebaseAppCheck.instance.getToken(true);
+    //print('\n  Step: 2 \n ');
+    //await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);
     //print('\n  Step: 3 \n ');
   } catch (e) {
     if (kDebugMode) {
