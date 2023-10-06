@@ -89,7 +89,7 @@ class _AppointmentsPageWidgetState extends State<AppointmentsPageWidget> {
                                         nextPage(AppointmentDetailsWidget(id: id, email: email), context),
                                     icon: const Icon(Icons.navigate_next, size: 40))
                               ]),
-                              Text("with $name", style: const TextStyle(color: Colors.orange, fontSize: 16)),
+                              Text("for $name", style: const TextStyle(color: Colors.orange, fontSize: 16)),
                               const SizedBox(height: 6),
                               Container(
                                   decoration: BoxDecoration(

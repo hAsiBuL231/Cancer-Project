@@ -13,6 +13,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  String searchText = '';
+  TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,12 @@ class _ChatPageState extends State<ChatPage> {
                 Padding(
                     padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
                     child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            searchText = value;
+                          });
+                        },
                         decoration: InputDecoration(
                             hintText: "Search...",
                             hintStyle: TextStyle(color: Colors.grey.shade600),
@@ -55,45 +63,83 @@ class _ChatPageState extends State<ChatPage> {
                                 borderRadius: BorderRadius.circular(20),
                                 borderSide: BorderSide(color: Colors.grey.shade100))))),
 
-                /// List Builder
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                  child: StreamBuilder(
+                if (searchText != '')
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                    child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('user_list')
-                          .doc(userEmail)
-                          .collection('inbox')
-                          .orderBy('last_time', descending: true)
+                          .where('User Name', isGreaterThanOrEqualTo: searchText)
+                          .where('User Name', isLessThan: '${searchText}z')
                           .snapshots(),
-                      builder: (context, AsyncSnapshot snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
                           return const Center(child: CircularProgressIndicator());
                         }
-                        if (snapshot.hasData) {
-                          if (snapshot.data.docs.length < 1) {
-                            return const Padding(
-                                padding: EdgeInsets.all(40),
-                                child: Center(child: Text('No User!', style: TextStyle(fontSize: 20))));
-                          }
-                          return ListView.builder(
-                              itemCount: snapshot.data.docs.length,
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.only(top: 16),
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                String email = snapshot.data.docs[index].id;
-                                if (email == '$userEmail') return const SizedBox.shrink();
-                                return conversationListTile(
-                                  email: email,
-                                  messageText: snapshot.data.docs[index]['last_message'],
-                                  time: snapshot.data.docs[index]['last_time'],
-                                );
-                              });
+
+                        if (snapshot.data!.docs.isEmpty) {
+                          return const Center(child: Text('No results found.'));
                         }
-                        return const Padding(
-                            padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()));
-                      }),
-                ),
+
+                        return ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 16),
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            String email = snapshot.data!.docs[index].id;
+                            if (email == '$userEmail') return const SizedBox.shrink();
+                            return conversationListTile(
+                              email: email,
+                              messageText: 'Hi',
+                              time: Timestamp(5, 5),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+
+                /// List Builder
+                if (searchText == '')
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('user_list')
+                            .doc(userEmail)
+                            .collection('inbox')
+                            .orderBy('last_time', descending: true)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          if (snapshot.hasData) {
+                            if (snapshot.data.docs.length < 1) {
+                              return const Padding(
+                                  padding: EdgeInsets.all(40),
+                                  child: Center(child: Text('No User!', style: TextStyle(fontSize: 20))));
+                            }
+                            return ListView.builder(
+                                itemCount: snapshot.data.docs.length,
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.only(top: 16),
+                                physics: const BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  String email = snapshot.data.docs[index].id;
+                                  if (email == '$userEmail') return const SizedBox.shrink();
+                                  return conversationListTile(
+                                    email: email,
+                                    messageText: snapshot.data.docs[index]['last_message'],
+                                    time: snapshot.data.docs[index]['last_time'],
+                                  );
+                                });
+                          }
+                          return const Padding(
+                              padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()));
+                        }),
+                  ),
               ]))),
     );
   }

@@ -43,7 +43,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
         'Expertise Field': expertiseFieldController.text,
         'Doctor Licence': doctorLicenceController.text,
         'Profession': "Doctor",
-        'Registered': false,
+        'Registered': 'false',
         //'profession': _professionController.text,
         //'phone': _phoneController.text,
         //'location': _locationController.text,

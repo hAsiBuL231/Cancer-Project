@@ -40,7 +40,7 @@ class _DoctorDetailsWidgetState extends State<DoctorDetailsWidget> {
               String name = snapshot.data['User Name'];
               String expertise = snapshot.data['Expertise Field'];
               String hospital = snapshot.data['Hospital'];
-              bool registered = snapshot.data['Registered'];
+              String registered = snapshot.data['Registered'];
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -184,7 +184,7 @@ class _DoctorDetailsWidgetState extends State<DoctorDetailsWidget> {
                                 ),
                               ),
                             ),
-                            if (registered)
+                            if (registered == 'true')
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
                                 child: FloatingActionButton.extended(

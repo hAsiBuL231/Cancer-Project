@@ -16,9 +16,9 @@ class BookAppointmentWidget extends StatefulWidget {
 
 class _BookAppointmentWidgetState extends State<BookAppointmentWidget> {
   TextEditingController nameController = TextEditingController();
-  String appointmentType = "Doctors Visit";
   TextEditingController problemController = TextEditingController();
-  //DateTime? pickedTime = DateTime.now();
+  String appointmentType = "Doctors Visit";
+
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -333,7 +333,7 @@ class _BookAppointmentWidgetState extends State<BookAppointmentWidget> {
                                       nextPage(
                                           CalendarAndTimeWidget(
                                               email: widget.email,
-                                              name: widget.name,
+                                              name: nameController.text,
                                               type: appointmentType,
                                               problem: problemController.text),
                                           context);

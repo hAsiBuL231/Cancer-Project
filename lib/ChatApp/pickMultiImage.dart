@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,42 +19,51 @@ class ImagePickerScreenState extends State<ImagePickerScreen> {
   void dispose() {
     // TODO: implement dispose
     List<String> imageUrls = [];
+    List<String> fileUrls = [];
     super.dispose();
   }
 
+  /////////////////////////////////////////////////////////////// Single Image /////////////////////////////////////////////////////////////////////////////////////////
+
   final userEmail = FirebaseAuth.instance.currentUser?.email;
 
-  List<String> imageUrls = [];
 
-  Future getImage() async {
+  Future _getCameraImage() async {
+    List<String> imageUrls = [];
+
     ImagePicker imagePicker = ImagePicker();
     XFile? pickedFile;
     pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
-      String imageUrl = await uploadImageToFirebase(imageFile);
+      String imageUrl = await _uploadFileToFirebase(imageFile, pickedFile.name, 'images');
       imageUrls.add(imageUrl);
     }
-    urlMessage();
+    _storeFileUrlsInFirestore(imageUrls, 'images');
   }
 
-  Future<void> pickImages() async {
+  //////////////////////////////////////////////////////////////// Multiple Image /////////////////////////////////////////////////////////////////////////////////////////
+
+  Future<void> _pickImages() async {
+    List<String> imageUrls = [];
+
     final picker = ImagePicker();
     List<XFile>? pickedFiles = await picker.pickMultiImage();
 
     if (pickedFiles != null) {
       for (var file in pickedFiles) {
         File imageFile = File(file.path);
-        String imageUrl = await uploadImageToFirebase(imageFile);
+        String imageUrl = await _uploadFileToFirebase(imageFile, file.name, 'images');
         setState(() {
           imageUrls.add(imageUrl);
         });
       }
+      _storeFileUrlsInFirestore(imageUrls, 'images');
     }
-    urlMessage();
   }
 
-  Future<String> uploadImageToFirebase(File imageFile) async {
+  /*
+  Future<String> _uploadImageToFirebase(File imageFile) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference storageReference = FirebaseStorage.instance.ref().child('$userEmail/messages/$fileName');
     UploadTask uploadTask = storageReference.putFile(imageFile);
@@ -62,8 +72,7 @@ class ImagePickerScreenState extends State<ImagePickerScreen> {
     return downloadUrl;
   }
 
-  urlMessage() async {
-    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  _urlMessage() async {
     var user1inbox =
         FirebaseFirestore.instance.collection('user_list').doc(userEmail).collection('inbox').doc(widget.email);
     var user2inbox =
@@ -94,6 +103,74 @@ class ImagePickerScreenState extends State<ImagePickerScreen> {
           "last_time": DateTime.now(),
         }));
   }
+*/
+  //////////////////////////////////////////////////////////////// Multiple Files /////////////////////////////////////////////////////////////////////////////////////////////
+  //List<String> fileUrls = [];
+
+  Future<void> _pickFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+
+    if (result != null) {
+      List<String> uploadedUrls = [];
+
+      for (PlatformFile file in result.files) {
+        File fileToUpload = File(file.path!);
+        String fileUrl = await _uploadFileToFirebase(fileToUpload, file.name, 'files');
+        uploadedUrls.add(fileUrl);
+      }
+
+      await _storeFileUrlsInFirestore(uploadedUrls, 'files');
+
+      /*setState(() {
+        fileUrls.addAll(uploadedUrls);
+      });*/
+    }
+  }
+
+  /////////////////////////////////////////////////////////////// Firebase Functions ///////////////////////////////////////////////////////////////////////////////////////////////
+
+  Future<String> _uploadFileToFirebase(File file, String fileName, String fileType) async {
+    Reference storageReference = FirebaseStorage.instance.ref().child('Message/$fileType/$userEmail/$fileName');
+    UploadTask uploadTask = storageReference.putFile(file);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  Future<void> _storeFileUrlsInFirestore(List<String> fileUrls, String fileType) async {
+    var user1inbox =
+        FirebaseFirestore.instance.collection('user_list').doc(userEmail).collection('inbox').doc(widget.email);
+    var user2inbox =
+        FirebaseFirestore.instance.collection('user_list').doc(widget.email).collection('inbox').doc(userEmail);
+
+    await user1inbox.collection('messages').add({
+      "file type": fileType,
+      "list": fileUrls,
+      "type": 'send',
+      "time": DateTime.now(),
+    }).then((value) => user1inbox.set({
+          "last_message": 'Sent files',
+          "last_time": DateTime.now(),
+        }));
+
+    var docRef = user1inbox.collection('messages').orderBy("time", descending: true).limit(1);
+    //FirebaseFirestore.instance.collection("data").snapshots().last
+    var docSnap = await docRef.get();
+    var docId = docSnap.docs[0].id;
+
+    await user2inbox.collection('messages').doc(docId).set({
+      "file type": fileType,
+      "list": fileUrls,
+      "type": 'receive',
+      "time": DateTime.now(),
+    }).then((value) => user2inbox.set({
+          "last_message": 'Sent files',
+          "last_time": DateTime.now(),
+        }));
+  }
+
+  ////////////////////////////////////////////////////////////// Widget ///////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   @override
   Widget build(BuildContext context) {
@@ -104,30 +181,21 @@ class ImagePickerScreenState extends State<ImagePickerScreen> {
             value: 1, child: Row(children: [Icon(Icons.photo), SizedBox(width: 10), Text("Photo")])),
         const PopupMenuItem(
             value: 2, child: Row(children: [Icon(Icons.photo_camera), SizedBox(width: 10), Text("Camera")])),
+        const PopupMenuItem(
+            value: 3, child: Row(children: [Icon(Icons.file_copy), SizedBox(width: 10), Text("Files")])),
       ],
       offset: const Offset(0, 100),
       //color: Colors.grey,
       elevation: 2,
       onSelected: (value) {
         if (value == 1) {
-          pickImages();
+          _pickImages();
         } else if (value == 2) {
-          getImage();
+          _getCameraImage();
+        } else if (value == 3) {
+          _pickFiles();
         }
       },
     );
   }
 }
-
-/*
-Expanded(
-            child: ListView.builder(
-              itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Image.network(imageUrls[index]),
-                );
-              },
-            ),
-          ),
- */

@@ -68,6 +68,14 @@ class _AppointmentDetailsWidgetState extends State<AppointmentDetailsWidget> {
                 ),
                 const Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
+                  child: Text('Patient Name:', style: TextStyle(fontSize: 20)),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 0),
+                  child: Text(name, style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                ),
+                const Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
                   child: Text('What’s the problem?', style: TextStyle(fontSize: 20)),
                 ),
                 Padding(

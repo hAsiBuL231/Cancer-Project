@@ -195,9 +195,12 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
               StreamBuilder(
                   stream: FirebaseFirestore.instance.collection('user_list').doc(userEmail).snapshots(),
                   builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
                     var data = snapshot.data!;
-                    var doctor = '';
-                    if (data['User'] != null) doctor = data['User'];
+                    var doctor = data['User'];
+                    //if (data['User'] != null) doctor = data['User'];
                     return GestureDetector(
                       onTap: () {
                         if (doctor == 'Doctor') {

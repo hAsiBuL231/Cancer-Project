@@ -5,6 +5,7 @@ import 'package:cancer_project/ChatApp/pickMultiImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'ChatFunctions.dart';
 
 class ConversationPage extends StatefulWidget {
@@ -135,13 +136,13 @@ class _ConversationPageState extends State<ConversationPage> {
                           String ID = snapshot.data.docs[index].id;
                           String? name = FirebaseAuth.instance.currentUser!.displayName;
                           String SenderName = '$name🔥';
-                          late String image;
-                          List<dynamic> imageUrls = [];
+                          late String fileType;
+                          List<dynamic> fileUrls = [];
                           try {
-                            image = snapshot.data.docs[index]['url'];
-                            imageUrls = snapshot.data.docs[index]['list'];
+                            fileType = snapshot.data.docs[index]['file type'];
+                            fileUrls = snapshot.data.docs[index]['list'];
                           } on StateError catch (e) {
-                            image = '';
+                            fileType = '';
                           }
                           return Padding(
                             padding: (messageType == "receive"
@@ -181,7 +182,7 @@ class _ConversationPageState extends State<ConversationPage> {
 
                                                 /// Message or Image or PDF
                                                 child: Builder(builder: (context) {
-                                                  if (image == '') {
+                                                  if (fileType == '') {
                                                     return Text(snapshot.data.docs[index]['message'],
                                                         style: TextStyle(
                                                             color: (messageType == "receive"
@@ -194,19 +195,23 @@ class _ConversationPageState extends State<ConversationPage> {
                                                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                                                         maxCrossAxisExtent: 200),
                                                     shrinkWrap: true,
-                                                    itemCount: imageUrls.length,
+                                                    itemCount: fileUrls.length,
                                                     itemBuilder: (context, index) {
-                                                      //if (image != '')
-                                                      return CachedNetworkImage(
-                                                          imageBuilder: (context, imageProvider) => Image(
-                                                              height: 30,
-                                                              width: 30,
-                                                              image: CachedNetworkImageProvider(imageUrls[index])),
-                                                          imageUrl: imageUrls[index],
-                                                          progressIndicatorBuilder: (context, url,
-                                                                  downloadProgress) =>
-                                                              CircularProgressIndicator(
-                                                                  value: downloadProgress.progress));
+                                                      if (fileType == 'images') {
+                                                        return CachedNetworkImage(
+                                                            /*imageBuilder: (context, imageProvider) => Image(
+                                                                height: 30,
+                                                                width: 30,
+                                                                image:
+                                                                    CachedNetworkImageProvider(fileUrls[index])),*/
+                                                            imageUrl: fileUrls[index],
+                                                            progressIndicatorBuilder:
+                                                                (context, url, downloadProgress) =>
+                                                                    CircularProgressIndicator(
+                                                                        value: downloadProgress.progress));
+                                                      }
+                                                      return FileItem(
+                                                          fileUrl: fileUrls[index], fileName: 'File ${index + 1}');
                                                     },
                                                   );
                                                 }),
@@ -303,3 +308,41 @@ class _ConversationPageState extends State<ConversationPage> {
       });
 }
 }*/
+
+class FileItem extends StatelessWidget {
+  final String fileUrl;
+  final String fileName;
+
+  FileItem({required this.fileUrl, required this.fileName});
+
+  Future<void> _launchURL() async {
+    if (await canLaunch(fileUrl)) {
+      await launch(fileUrl);
+    } else {
+      throw 'Could not launch $fileUrl';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _launchURL,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.black26,
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.file_download, color: Colors.white),
+            const SizedBox(width: 16.0),
+            Text(fileName, style: const TextStyle(color: Colors.white)),
+          ],
+        ),
+      ),
+    );
+  }
+}
