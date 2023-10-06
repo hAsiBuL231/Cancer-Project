@@ -48,12 +48,13 @@ class _AppointmentDetailsWidgetState extends State<AppointmentDetailsWidget> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
+            var data = snapshot.data;
             String email = snapshot.data!['Email'];
             String name = snapshot.data!['Name'];
             String type = snapshot.data!['Type'];
             String problem = snapshot.data!['Problem'];
-            Timestamp getTime = snapshot.data!['Time'];
-            DateTime time = getTime.toDate();
+            //Timestamp getTime = snapshot.data!['Time'];
+            //DateTime time = getTime.toDate();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -96,11 +97,13 @@ class _AppointmentDetailsWidgetState extends State<AppointmentDetailsWidget> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           child: Container(
                             width: MediaQuery.sizeOf(context).width * 0.86,
-                            height: 60,
+                            //height: 60,
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                             child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 0),
-                              child: Row(
+                              padding: const EdgeInsetsDirectional.fromSTEB(12, 4, 12, 4),
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.start,
                                 children: [
                                   Container(
                                       width: 60,
@@ -138,7 +141,23 @@ class _AppointmentDetailsWidgetState extends State<AppointmentDetailsWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 30),
-                  child: Text('$time', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.lightBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                        const Icon(Icons.calendar_today, color: Colors.white, size: 15),
+                        const SizedBox(width: 5),
+                        Text('${data!['Day']}, ${data['Date']}', style: const TextStyle(color: Colors.white)),
+                        const SizedBox(width: 20),
+                        const Icon(Icons.access_alarm, color: Colors.white, size: 17),
+                        const SizedBox(width: 5),
+                        Flexible(child: Text(data['Time'], style: const TextStyle(color: Colors.white)))
+                      ])),
+                  //child: Text('$time', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                 ),
                 Center(
                   child: FloatingActionButton.extended(
@@ -157,8 +176,14 @@ class _AppointmentDetailsWidgetState extends State<AppointmentDetailsWidget> {
                           .collection('Appointments')
                           .doc(widget.id)
                           .delete();
+                      FirebaseFirestore.instance
+                          .collection('user_list')
+                          .doc(widget.email)
+                          .collection('Appointments')
+                          .doc(widget.id)
+                          .delete();
                     },
-                    label: const Text("Remove Appointment"),
+                    label: const Text("Cancel Appointment"),
                   ),
                 ),
               ],

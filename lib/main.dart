@@ -1,17 +1,16 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'firebase_options.dart';
 import 'SplashScreen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     //await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.debug);
     //print('\n  Step: 0 \n ');
-    await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.playIntegrity);
+    //await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.playIntegrity);
     //print('\n  Step: 1 \n ');
     //await FirebaseAppCheck.instance.getToken(true);
     //print('\n  Step: 2 \n ');

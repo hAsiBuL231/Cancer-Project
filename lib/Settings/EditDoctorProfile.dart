@@ -43,6 +43,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
         'Expertise Field': expertiseFieldController.text,
         'Doctor Licence': doctorLicenceController.text,
         'Profession': "Doctor",
+        'Registered': false,
         //'profession': _professionController.text,
         //'phone': _phoneController.text,
         //'location': _locationController.text,
@@ -124,7 +125,6 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                       shape: BoxShape.circle,
                     ),
                     child: Image.network(imageURL!),
-
                   ),
                 ),
 
@@ -132,7 +132,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
                   child: FloatingActionButton.extended(
-                    onPressed: () => const GetImage(),
+                    onPressed: () => nextPage(const GetImage(), context),
                     label: const Text("Change Photo"),
                   ),
                 ),
@@ -194,6 +194,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                             ///validator: yourNameControllerValidator.asValidator(context),
                           ),
                         ),
+
                         /// Age
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -290,6 +291,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                             ),
                           ),
                         ),
+
                         /// Address
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -341,6 +343,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                             },
                           ),
                         ),
+
                         /// Working Hospital
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -393,6 +396,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                             ///validator: yourNameControllerValidator.asValidator(context),
                           ),
                         ),
+
                         /// Hospital Address
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -444,6 +448,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                             },
                           ),
                         ),
+
                         /// Expertise
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -496,6 +501,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
                             ///validator: yourNameControllerValidator.asValidator(context),
                           ),
                         ),
+
                         /// Licence
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),

@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cancer_project/All%20Functions%20Page/Functions.dart';
 import 'package:cancer_project/ChatApp/UsersProfile.dart';
+import 'package:cancer_project/ChatApp/pickMultiImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'ChatFunctions.dart';
-
-import 'PhotoUpload.dart';
 
 class ConversationPage extends StatefulWidget {
   final String imageUrl;
@@ -137,8 +136,10 @@ class _ConversationPageState extends State<ConversationPage> {
                           String? name = FirebaseAuth.instance.currentUser!.displayName;
                           String SenderName = '$name🔥';
                           late String image;
+                          List<dynamic> imageUrls = [];
                           try {
                             image = snapshot.data.docs[index]['url'];
+                            imageUrls = snapshot.data.docs[index]['list'];
                           } on StateError catch (e) {
                             image = '';
                           }
@@ -177,6 +178,39 @@ class _ConversationPageState extends State<ConversationPage> {
                                               elevation: 5,
                                               child: Padding(
                                                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+
+                                                /// Message or Image or PDF
+                                                child: Builder(builder: (context) {
+                                                  if (image == '') {
+                                                    return Text(snapshot.data.docs[index]['message'],
+                                                        style: TextStyle(
+                                                            color: (messageType == "receive"
+                                                                ? Colors.blue
+                                                                : Colors.white),
+                                                            fontFamily: 'Poppins',
+                                                            fontSize: 15));
+                                                  }
+                                                  return GridView.builder(
+                                                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                        maxCrossAxisExtent: 200),
+                                                    shrinkWrap: true,
+                                                    itemCount: imageUrls.length,
+                                                    itemBuilder: (context, index) {
+                                                      //if (image != '')
+                                                      return CachedNetworkImage(
+                                                          imageBuilder: (context, imageProvider) => Image(
+                                                              height: 30,
+                                                              width: 30,
+                                                              image: CachedNetworkImageProvider(imageUrls[index])),
+                                                          imageUrl: imageUrls[index],
+                                                          progressIndicatorBuilder: (context, url,
+                                                                  downloadProgress) =>
+                                                              CircularProgressIndicator(
+                                                                  value: downloadProgress.progress));
+                                                    },
+                                                  );
+                                                }),
+                                                /*
                                                 child: Builder(builder: (context) {
                                                   //if (image != '')
                                                   return CachedNetworkImage(
@@ -205,6 +239,7 @@ class _ConversationPageState extends State<ConversationPage> {
                                                               fontFamily: 'Poppins',
                                                               fontSize: 15));*/
                                                 }),
+                                                */
                                               ))))
                                 ]),
                           );
@@ -223,8 +258,10 @@ class _ConversationPageState extends State<ConversationPage> {
                   child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
                     GestureDetector(
                         child: DecoratedBox(
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(40), color: Colors.blue),
-                            child: ForContext(email: widget.email))),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40), color: Colors.blue),
+                      child: ImagePickerScreen(email: widget.email),
+                      //child: ImagePickerScreen(),
+                    )),
                     const SizedBox(width: 15),
                     Expanded(
                         child: Material(

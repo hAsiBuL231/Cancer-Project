@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cancer_project/Auth/AuthTree.dart';
 import 'package:cancer_project/Auth/ChangePassword.dart';
+import 'package:cancer_project/Settings/EditDoctorProfile.dart';
 import 'package:cancer_project/Settings/EditPatientProfile.dart';
 import 'package:cancer_project/All%20Functions%20Page/Functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -191,62 +192,75 @@ class _ProfileWidgetState extends State<ProfileWidget> with TickerProviderStateM
               ),
 
               /// Edit Profile
-              GestureDetector(
-                onTap: () => nextPage(const EditPatientProfile(), context),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      //color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 3,
-                          color: Color(0x33000000),
-                          offset: Offset(0, 1),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(8),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          const Icon(
-                            Icons.mode_edit_outline_outlined,
-                            color: Colors.black,
-                            //color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24,
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('user_list').doc(userEmail).snapshots(),
+                  builder: (context, snapshot) {
+                    var data = snapshot.data!;
+                    var doctor = '';
+                    if (data['User'] != null) doctor = data['User'];
+                    return GestureDetector(
+                      onTap: () {
+                        if (doctor == 'Doctor') {
+                          nextPage(const EditDoctorProfile(), context);
+                        } else {
+                          nextPage(const EditPatientProfile(), context);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
+                        child: Container(
+                          width: double.infinity,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            //color: FlutterFlowTheme.of(context).secondaryBackground,
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 3,
+                                color: Color(0x33000000),
+                                offset: Offset(0, 1),
+                              )
+                            ],
+                            borderRadius: BorderRadius.circular(8),
+                            shape: BoxShape.rectangle,
                           ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                            child: Text(
-                              'Edit Profile',
-                              style: TextStyle(fontSize: 18, fontFamily: GoogleFonts.outfit().fontFamily),
-                              //style: FlutterFlowTheme.of(context).labelLarge,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                const Icon(
+                                  Icons.mode_edit_outline_outlined,
+                                  color: Colors.black,
+                                  //color: FlutterFlowTheme.of(context).secondaryText,
+                                  size: 24,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+                                  child: Text(
+                                    'Edit Profile',
+                                    style: TextStyle(fontSize: 18, fontFamily: GoogleFonts.outfit().fontFamily),
+                                    //style: FlutterFlowTheme.of(context).labelLarge,
+                                  ),
+                                ),
+                                const Expanded(
+                                  child: Align(
+                                    alignment: AlignmentDirectional(0.9, 0),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.black,
+                                      //color: FlutterFlowTheme.of(context).secondaryText,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional(0.9, 0),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.black,
-                                //color: FlutterFlowTheme.of(context).secondaryText,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    );
+                  }),
 
               /// Change Password
               GestureDetector(

@@ -5,14 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class DoctorsPageWidget extends StatefulWidget {
-  const DoctorsPageWidget({super.key});
+class RegisteredDoctorsPageWidget extends StatefulWidget {
+  const RegisteredDoctorsPageWidget({super.key});
 
   @override
-  State<DoctorsPageWidget> createState() => _DoctorsPageWidgetState();
+  State<RegisteredDoctorsPageWidget> createState() => _RegisteredDoctorsPageWidgetState();
 }
 
-class _DoctorsPageWidgetState extends State<DoctorsPageWidget> {
+class _RegisteredDoctorsPageWidgetState extends State<RegisteredDoctorsPageWidget> {
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
 
   @override
@@ -67,11 +67,11 @@ class _DoctorsPageWidgetState extends State<DoctorsPageWidget> {
                           String name = snapshot.data.docs[index]['User Name'];
                           String expertise = snapshot.data.docs[index]['Expertise Field'];
                           bool registered = snapshot.data.docs[index]['Registered'];
-
                           //String hospital = snapshot.data.docs[index]['Hospital'];
 
                           if (image == '' || name == '' || expertise == '') return const SizedBox.shrink();
                           if (email == userEmail) return const SizedBox.shrink();
+                          if (!registered) return const SizedBox.shrink();
                           return Card(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             elevation: 5,

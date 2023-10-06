@@ -43,8 +43,7 @@ class _GetImageState extends State<GetImage> {
       return;
     }
 
-    final Reference storageReference =
-        FirebaseStorage.instance.ref().child('images/${DateTime.now().millisecondsSinceEpoch}');
+    final Reference storageReference = FirebaseStorage.instance.ref().child('images/$userEmail/${DateTime.now()}');
     final UploadTask uploadTask = storageReference.putFile(File(croppedFile.path));
     await uploadTask.whenComplete(() => snackBar('Photo uploaded. Wait to load the image.', context));
     String url = await storageReference.getDownloadURL();

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cancer_project/All%20Functions%20Page/Functions.dart';
 import 'package:cancer_project/Pages/Adiitional%20pages/bookAppoinment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../ChatApp/ConversationPage.dart';
@@ -41,6 +40,7 @@ class _DoctorDetailsWidgetState extends State<DoctorDetailsWidget> {
               String name = snapshot.data['User Name'];
               String expertise = snapshot.data['Expertise Field'];
               String hospital = snapshot.data['Hospital'];
+              bool registered = snapshot.data['Registered'];
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -184,36 +184,36 @@ class _DoctorDetailsWidgetState extends State<DoctorDetailsWidget> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                              child: FloatingActionButton.extended(
-                                onPressed: () async {
-                                  await showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    barrierColor: const Color(0x00000000),
-                                    context: context,
-                                    builder: (context) {
-                                      return SingleChildScrollView(
-                                        child: Padding(
+                            if (registered)
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
+                                child: FloatingActionButton.extended(
+                                  onPressed: () async {
+                                    await showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      barrierColor: const Color(0x00000000),
+                                      context: context,
+                                      builder: (context) {
+                                        return Padding(
                                           padding: MediaQuery.viewInsetsOf(context),
                                           child: SizedBox(
-                                            height: MediaQuery.sizeOf(context).height * 1,
+                                            //height: MediaQuery.sizeOf(context).height * 1,
                                             child: BookAppointmentWidget(email: email, name: name),
+                                            //child: CalendarAndTimeWidget(),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ).then((value) => setState(() {}));
-                                },
+                                        );
+                                      },
+                                    ).then((value) => setState(() {}));
+                                  },
 
-                                //{
-                                //   nextPage(BookAppointmentWidget(email: email, name: name), context);
-                                // },
-                                backgroundColor: const Color(0xFF4B39EF),
-                                label: const Text('Book Appointment'),
+                                  //{
+                                  //   nextPage(BookAppointmentWidget(email: email, name: name), context);
+                                  // },
+                                  backgroundColor: const Color(0xFF4B39EF),
+                                  label: const Text('Book Appointment'),
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),

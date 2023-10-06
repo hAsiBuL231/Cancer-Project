@@ -138,7 +138,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
                   child: FloatingActionButton.extended(
-                    onPressed: () => const GetImage(),
+                    onPressed: () => nextPage(const GetImage(), context),
                     label: const Text("Change Photo"),
                   ),
                 ),
@@ -197,6 +197,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
                         /// Age
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -291,6 +292,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ),
                           ),
                         ),
+
                         /// Address
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -341,6 +343,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
                         /// Cancer Type
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -392,6 +395,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             ///validator: yourNameControllerValidator.asValidator(context),
                           ),
                         ),
+
                         /// Cancer Stage
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -441,6 +445,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
                         /// Admitted Hospital
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -490,6 +495,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
                         /// Hospital address
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -540,6 +546,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
                         /// Doctors Name
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -589,6 +596,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                             },
                           ),
                         ),
+
                         /// Licence
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
@@ -648,7 +656,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
                   child: FloatingActionButton.extended(
                     onPressed: () {
                       //if (_formKey.currentState!.validate()) {
-                        _submitForm();
+                      _submitForm();
                       //}
                     },
                     elevation: 3,
