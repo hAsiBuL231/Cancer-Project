@@ -188,51 +188,56 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Wrap(
-                                  alignment: WrapAlignment.center,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 120,
-                                      height: 120,
-                                      decoration: BoxDecoration(
-                                        color: primary,
-                                        shape: BoxShape.circle,
-                                        //border: Border.all(color: secondary, width: 2),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(80),
-                                          child: CachedNetworkImage(
-                                            imageUrl: '$userImage',
-                                            //'https://images.unsplash.com/photo-1489980557514-251d61e3eeb6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OTZ8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=900&q=60',
-                                            fadeInDuration: const Duration(milliseconds: 500),
-                                            fadeOutDuration: const Duration(milliseconds: 500),
-                                            width: 120,
-                                            height: 120,
-                                            fit: BoxFit.cover,
-                                            imageBuilder: (context, imageProvider) => CircleAvatar(
-                                                backgroundImage: imageProvider,
-                                                maxRadius: 25,
-                                                backgroundColor: Colors.blue),
-                                            placeholder: (context, url) => const CircularProgressIndicator(),
-                                            errorWidget: (context, url, error) => const CircleAvatar(
-                                                maxRadius: 25,
-                                                backgroundColor: Colors.blue,
-                                                child: Icon(Icons.account_circle, size: 50)),
+                                child: SizedBox(
+                                  width: double.maxFinite,
+                                  child: Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    runAlignment: WrapAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 120,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: primary,
+                                          shape: BoxShape.circle,
+                                          //border: Border.all(color: secondary, width: 2),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(80),
+                                            child: CachedNetworkImage(
+                                              imageUrl: '$userImage',
+                                              //'https://images.unsplash.com/photo-1489980557514-251d61e3eeb6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OTZ8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=900&q=60',
+                                              fadeInDuration: const Duration(milliseconds: 500),
+                                              fadeOutDuration: const Duration(milliseconds: 500),
+                                              width: 120,
+                                              height: 120,
+                                              fit: BoxFit.cover,
+                                              imageBuilder: (context, imageProvider) => CircleAvatar(
+                                                  backgroundImage: imageProvider,
+                                                  maxRadius: 25,
+                                                  backgroundColor: Colors.blue),
+                                              placeholder: (context, url) => const CircularProgressIndicator(),
+                                              errorWidget: (context, url, error) => const CircleAvatar(
+                                                  maxRadius: 25,
+                                                  backgroundColor: Colors.blue,
+                                                  child: Icon(Icons.account_circle, size: 50)),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 15),
-                                    Text('Hello! $userName',
-                                        style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold,
-                                          //fontFamily: GoogleFonts.outfit().fontFamily
-                                        ))
-                                  ],
+                                      const SizedBox(width: 15),
+                                      Text('Hello! $userName',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                            //fontFamily: GoogleFonts.outfit().fontFamily
+                                          ))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -241,23 +246,28 @@ class _MyHomePageState extends State<MyHomePage> {
                         const Divider(),
 
                         /// Buttons
-                        GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, crossAxisSpacing: 0, mainAxisSpacing: 0),
-                          padding: const EdgeInsets.all(0),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: widgetList.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              color: Colors.purple[100],
-                              margin: const EdgeInsets.all(8),
-                              child: Center(
-                                child: widgetList[index],
-                              ),
-                            );
-                          },
-                        ),
+                        LayoutBuilder(builder: (context, constraints) {
+                          int cnt = 2;
+                          if (constraints.maxWidth > 500) cnt = 3;
+                          if (constraints.maxWidth > 800) cnt = 5;
+                          return GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: cnt, crossAxisSpacing: 0, mainAxisSpacing: 0),
+                            padding: const EdgeInsets.all(0),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: widgetList.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                color: Colors.purple[100],
+                                margin: const EdgeInsets.all(8),
+                                child: Center(
+                                  child: widgetList[index],
+                                ),
+                              );
+                            },
+                          );
+                        }),
                         const Divider(),
 
                         /// Trailer row

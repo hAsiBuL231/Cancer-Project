@@ -95,8 +95,9 @@ class _RegisteredDoctorsPageWidgetState extends State<RegisteredDoctorsPageWidge
 
                             //String hospital = snapshot.data.docs[index]['Hospital'];
 
-                            if (image == '' || name == '' || expertise == '' || registered == 'false')
+                            if (image == '' || name == '' || expertise == '' || registered == 'false') {
                               return const SizedBox.shrink();
+                            }
                             if (email == userEmail) return const SizedBox.shrink();
                             return Card(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -187,7 +188,7 @@ class _RegisteredDoctorsPageWidgetState extends State<RegisteredDoctorsPageWidge
 
                                 if (image == '' || name == '' || expertise == '') return const SizedBox.shrink();
                                 if (email == userEmail) return const SizedBox.shrink();
-                                if (registered == '') return const SizedBox.shrink();
+                                if (registered == 'false') return const SizedBox.shrink();
                                 return Card(
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                   elevation: 5,

@@ -15,6 +15,7 @@ import 'Functions.dart';
 //String? userImage = FirebaseAuth.instance.currentUser?.photoURL;
 
 authentication(context) async {
+  FirebaseAuth.instance.userChanges();
   FirebaseAuth.instance.authStateChanges();
   FirebaseAuth.instance.idTokenChanges();
   User? user = FirebaseAuth.instance.currentUser;

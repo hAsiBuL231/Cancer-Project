@@ -79,14 +79,19 @@ class UsersProfile extends StatelessWidget {
                           .map((key) => Card(
                                 child: Padding(
                                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      //if(key=='User')
-                                      Text('$key: ',
-                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                      Text(data[key]!, style: const TextStyle(fontSize: 18, color: Colors.blue))
-                                    ],
+                                  child: SizedBox(
+                                    width: double.maxFinite,
+                                    child: Wrap(
+                                      alignment: WrapAlignment.spaceBetween,
+                                      crossAxisAlignment: WrapCrossAlignment.start,
+                                      runAlignment: WrapAlignment.spaceBetween,
+                                      children: [
+                                        //if(key=='User')
+                                        Text('$key: ',
+                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                        Text(data[key]!, style: const TextStyle(fontSize: 18, color: Colors.blue))
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ))
